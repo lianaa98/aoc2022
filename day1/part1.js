@@ -9,3 +9,9 @@ const elves = groups.map(group => {
 
 const maxElf = Math.max(...elves);
 console.log(maxElf);
+
+module.exports = {
+  groups,
+  elves,
+  maxElf
+};
