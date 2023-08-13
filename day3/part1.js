@@ -1,33 +1,43 @@
-let fs = require('fs');
-let rucksacks = fs.readFileSync('input.txt').toString().split("\n");
+const fs = require('fs');
+const data = fs.readFileSync('input.txt', 'utf-8')
+const rucksacks = data.split("\n");
 
-console.log(rucksacks);
+// Lowercase item types a through z have priorities 1 through 26.
+// Uppercase item types A through Z have priorities 27 through 52.
+const itemTypes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-let items = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const findCommonItem = (compartmentOne, compartmentTwo) => {
+  const compartmentOneItems = compartmentOne.split("");
+  const compartmentTwoItems = compartmentTwo.split("");
 
-let priority = {};
+  let commonItem = null;
 
-for (let num = 0; num < items.length; num ++) {
-  priority[items[num]] = num + 1
-}
-
-let sum = 0;
-
-for (let i = 0; i < rucksacks.length; i++) {
-  let half = Math.ceil(rucksacks[i].length / 2);
-  let firstHalf = rucksacks[i].slice(0, half);
-  let secondHalf = rucksacks[i].slice(half);
-
-  let newFirstHalf = [...new Set([...firstHalf])].join("");
-  let newSecondHalf = [...new Set([...secondHalf])].join("");
-
-  for (let x = 0; x < newFirstHalf.length; x++) {
-    for (let y = 0; y < newSecondHalf.length; y++) {
-      if (newFirstHalf[x] === newSecondHalf[y]) {
-       sum += priority[newFirstHalf[x]];
-      }
+  for (const item of compartmentOneItems) {
+    if (compartmentTwoItems.includes(item)) {
+      commonItem = item;
+      break;
     }
   }
+
+  return commonItem;
 }
 
-console.log(sum);
+const findPriority = (type) => {
+  return itemTypes.indexOf(type) + 1;
+}
+
+let totalPriorities = 0;
+
+const compartments = rucksacks.map((rucksack) => {
+  const between = Math.floor(rucksack.length / 2);
+
+  const firstHalf = rucksack.slice(0, between);
+  const secondHalf = rucksack.slice(between);
+
+  const type = findCommonItem(firstHalf, secondHalf);
+  const priority = findPriority(type);
+
+  totalPriorities += priority;
+});
+
+console.log(totalPriorities)
