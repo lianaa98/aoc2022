@@ -7,36 +7,54 @@ Draw = Y, 3 points;
 Won = Z, 6 points;
 */
 
-let fs = require('fs');
-let array = fs.readFileSync('input.txt').toString().split("\n");
-let outcomes = [];
+const fs = require('fs');
+const data = fs.readFileSync('input.txt', 'utf-8')
+const rounds = data.split("\n");
 
-for (let i of array) {
-  let output = i.toString().split(" ");
-  outcomes.push(output);
+const ROCK = 1;
+const PAPER = 2;
+const SCISSORS = 3;
+
+const LOST = 0;
+const DRAW = 3;
+const WON = 6;
+
+const myWinningPoints = {
+  X: LOST,
+  Y: DRAW,
+  Z: WON
 }
 
-console.log(outcomes);
+const opponentChoicePoints = {
+  A: ROCK,
+  B: PAPER,
+  C: SCISSORS
+}
 
-let move = {A: 1, B: 2, C: 3};
-let round = {X: 0, Y: 3, Z: 6};
-
-let score = 0;
-
-for (let num of outcomes) {
-  score += round[num[1]];
-  if(num[1] === 'X') {
-    if(num[0] === 'A') score += move['C'];
-    if(num[0] === 'B') score += move['A'];
-    if(num[0] === 'C') score += move['B']; 
-  } else if(num[1] === 'Y') {
-    score += move[(num[0])];
-  } else if(num[1] === 'Z') {
-    if(num[0] === 'A') score += move['B'];
-    if(num[0] === 'B') score += move['C'];
-    if(num[0] === 'C') score += move['A'];
+const decideMyChoicePoints = (opponentChoice, outcome) => {
+  if (myWinningPoints[outcome] === DRAW) {
+    return opponentChoicePoints[opponentChoice];
   }
 
+  if (myWinningPoints[outcome] === LOST) {
+    return opponentChoicePoints[opponentChoice] === ROCK ? SCISSORS : opponentChoicePoints[opponentChoice] - 1;
+  }
+
+  if (myWinningPoints[outcome] === WON) {
+    return opponentChoicePoints[opponentChoice] === SCISSORS ? ROCK : opponentChoicePoints[opponentChoice] + 1;
+  }
 }
 
-console.log(score);
+let myTotalPoints = 0;
+
+const outcomes = rounds.map((round) => {
+  const outcome = round[2];
+  const opponentChoice = round[0];
+
+  const winningPointsThisRound = myWinningPoints[outcome];
+  const choicePointsThisRound = decideMyChoicePoints(opponentChoice, outcome);
+
+  myTotalPoints += winningPointsThisRound + choicePointsThisRound;
+});
+
+console.log(myTotalPoints);
