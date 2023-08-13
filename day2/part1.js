@@ -11,17 +11,18 @@ const fs = require('fs');
 const data = fs.readFileSync('input.txt', 'utf-8')
 const rounds = data.split("\n");
 
-const myPoints = {
-  X: 1,
-  Y: 2,
-  Z: 3 
-}
+const ROCK = 1;
+const PAPER = 2;
+const SCISSORS = 3;
 
-const opponentPoints = {
-  A: 1,
-  B: 2,
-  C: 3
-}
+const pointsOfChoice = {
+  A: ROCK,
+  X: ROCK,
+  B: PAPER,
+  Y: PAPER,
+  C: SCISSORS,
+  Z: SCISSORS
+};
 
 const winningPoints = {
   lost: 0,
@@ -30,19 +31,21 @@ const winningPoints = {
 }
 
 const myWinningPointsThisRound = (myChoice, opponentChoice) => {
-  if (myPoints[myChoice] === 3 && opponentPoints[opponentChoice] === 1) {
+
+  if (pointsOfChoice[myChoice] === SCISSORS && pointsOfChoice[opponentChoice] === ROCK) {
     return winningPoints.lost;
   }
-  if (myPoints[myChoice] === 1 && opponentPoints[opponentChoice] === 3) {
+  if (pointsOfChoice[myChoice] === ROCK && pointsOfChoice[opponentChoice] === SCISSORS) {
     return winningPoints.won;
   }
-  if (myPoints[myChoice] === opponentPoints[opponentChoice]) {
+
+  if (pointsOfChoice[myChoice] === pointsOfChoice[opponentChoice]) {
     return winningPoints.draw;
   } 
-  if (myPoints[myChoice] > opponentPoints[opponentChoice]) {
+  if (pointsOfChoice[myChoice] > pointsOfChoice[opponentChoice]) {
     return winningPoints.won;
   }
-  if (myPoints[myChoice] < opponentPoints[opponentChoice]) {
+  if (pointsOfChoice[myChoice] < pointsOfChoice[opponentChoice]) {
     return winningPoints.lost;
   }
 }
@@ -54,7 +57,7 @@ const outcomes = rounds.map((round) => {
   const opponentChoice = round[0];
 
   const myWinningPoints = myWinningPointsThisRound(myChoice, opponentChoice);
-  const myChoicePoints = myPoints[myChoice];
+  const myChoicePoints = pointsOfChoice[myChoice];
 
   myTotalPoints += myWinningPoints + myChoicePoints;
 })
