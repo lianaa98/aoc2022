@@ -25,23 +25,35 @@ const myWinningPoints = {
   Z: WON
 }
 
-const opponentChoicePoints = {
+const choicePoints = {
   A: ROCK,
   B: PAPER,
   C: SCISSORS
 }
 
+const winningChoice = {
+  A: "B",
+  B: "C",
+  C: "A"
+}
+
+const lostChoice = {
+  A: "C",
+  B: "A",
+  C: "B"
+}
+
 const decideMyChoicePoints = (opponentChoice, outcome) => {
   if (myWinningPoints[outcome] === DRAW) {
-    return opponentChoicePoints[opponentChoice];
+    return choicePoints[opponentChoice];
   }
 
   if (myWinningPoints[outcome] === LOST) {
-    return opponentChoicePoints[opponentChoice] === ROCK ? SCISSORS : opponentChoicePoints[opponentChoice] - 1;
+    return choicePoints[lostChoice[opponentChoice]];
   }
 
   if (myWinningPoints[outcome] === WON) {
-    return opponentChoicePoints[opponentChoice] === SCISSORS ? ROCK : opponentChoicePoints[opponentChoice] + 1;
+    return choicePoints[winningChoice[opponentChoice]];
   }
 }
 
